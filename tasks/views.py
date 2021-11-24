@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from tasks.serializer import TaskSerializer
 from tasks.models import Task
-
+import django
 # Create your views here.
 
 def index(request):
@@ -20,10 +20,12 @@ def task_list(request):
     """
     List all tasks.
     """
+    django.middleware.csrf.get_token(request)
     if request.method == 'GET':
         tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
-        return JsonResponse(serializer.data,status=200, safe=False)
+        #print(serializer.data)
+        return HttpResponse(JsonResponse( serializer.data,safe=False))
     if request.method == 'POST':
         return render(request,'forms.html')
 
@@ -34,15 +36,20 @@ def post_task(request):
     """  
     if request.method == "POST":  
         form = TaskSerializer(data=request.POST)
+        print("foi post")
         if form.is_valid():  
             try:  
                 form.save()  
-                return redirect('/tasks/get_tasks')  
-            except Exception as e:  
-                print(e) 
-    return render(request,'forms.html')
+                print("deu certo")
+                return HttpResponse(JsonResponse({'data':'ok'},safe=False))
+            except Exception as e: 
+                return HttpResponse(JsonResponse({'data':e},safe=False))
+        else:
+            return HttpResponse(JsonResponse({'data':'error'},safe=False))
+    else:
+        return render(request,'forms.html')
 
 def delete_task(request, id):
     tasks = Task.objects.get(id=id)
     tasks.delete()
-    return redirect('/tasks/get_tasks')
+    return HttpResponse(JsonResponse({'data':'ok'},safe=False))
