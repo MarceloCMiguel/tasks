@@ -1,0 +1,18 @@
+<!doctype html>
+<title>Post a task</title>
+<h1>Post a task</h1>
+<form action="/tasks/post_task" class ="post-form" method="POST" enctype=multipart/form-data><p>
+    {% csrf_token %}  
+<label for ="pub_date">Time</label><br>
+<input type="datetime-local" id="pub_date"
+       name="pub_date" value="2018-06-12T19:30:00">
+<h1></h1>
+<label for="title">Title</label><br>
+<input type="text" id="title" name="title"><br>
+<h1></h1>
+<label for="description">Description</label><br>
+<input type="text" id="description" name="description"><br>
+<h1></h1>
+<input type=submit value=Post>
+
+</form>
