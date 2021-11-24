@@ -28,7 +28,10 @@ def task_list(request):
         return render(request,'forms.html')
 
 
-def post_task(request):  
+def post_task(request):
+    """
+    Post a new task.
+    """  
     if request.method == "POST":  
         form = TaskSerializer(data=request.POST)
         if form.is_valid():  
@@ -39,3 +42,7 @@ def post_task(request):
                 print(e) 
     return render(request,'forms.html')
 
+def delete_task(request, id):
+    tasks = Task.objects.get(id=id)
+    tasks.delete()
+    return redirect('/tasks/get_tasks')
